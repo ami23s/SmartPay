@@ -21,6 +21,7 @@ auth.onAuthStateChanged(user =>{
         if(doc.data().email==user.email && doc.data().account_type=="operator"){
             console.log("its operator");
             document.querySelector('#currentuser').innerHTML = doc.data().Name;
+			
           document.querySelector('#empnoandamt').style.display = "block";
           document.querySelector('#getempno').style.display = "block";
           document.querySelector('#getamt').style.display = "block";
@@ -31,6 +32,8 @@ auth.onAuthStateChanged(user =>{
             // document.querySelector('#welcome_user').style.display = "block";
             document.querySelector('#petrolpump_amt').style.display = "block";
             document.querySelector('#currentuser').innerHTML = doc.data().Name;
+			document.querySelector('#quarterno').innerHTML=doc.data().QuarterNo;
+			document.querySelector('#colonyname').innerHTML=doc.data().ColonyName;
             var query = db.collection("users").where("email", "==", user.email);
             query.get()
             .then(function(querySnapshot) {
