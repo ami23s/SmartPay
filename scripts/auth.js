@@ -17,10 +17,10 @@ auth.onAuthStateChanged(user =>{
             var nm = doc.data().Name;
             console.log(nm);
         }
-        document.querySelector('#guide').innerHTML = "Welcome" + nm;
+        
         if(doc.data().email==user.email && doc.data().account_type=="operator"){
             console.log("its operator");
-          document.querySelector('#guide').style.display = "block";
+            document.querySelector('#currentuser').innerHTML = doc.data().Name;
           document.querySelector('#empnoandamt').style.display = "block";
           document.querySelector('#getempno').style.display = "block";
           document.querySelector('#getamt').style.display = "block";
@@ -28,9 +28,9 @@ auth.onAuthStateChanged(user =>{
         }
         else if(doc.data().email==user.email && doc.data().account_type=="user"){
             document.querySelector('#user_display').style.display = "block";
-            document.querySelector('#welcome_user').style.display = "block";
+            // document.querySelector('#welcome_user').style.display = "block";
             document.querySelector('#petrolpump_amt').style.display = "block";
-            document.querySelector('#welcome_user').innerHTML = "Welcome" + " " + doc.data().Name;
+            document.querySelector('#currentuser').innerHTML = doc.data().Name;
             var query = db.collection("users").where("email", "==", user.email);
             query.get()
             .then(function(querySnapshot) {
@@ -57,13 +57,14 @@ auth.onAuthStateChanged(user =>{
   }
   else{
       console.log('user logged out');
-      document.querySelector('#guide').style.display = "none";
+    //   document.querySelector('#guide').style.display = "none";
       document.querySelector('#getamt').style.display = "none";
       document.querySelector('#getempno').style.display = "none";
       document.querySelector('#btn_to_update').style.display = "none";
       document.querySelector('#user_display').style.display = "none";
-      document.querySelector('#welcome_user').style.display = "none";
+    //   document.querySelector('#welcome_user').style.display = "none";
       document.querySelector('#petrolpump_amt').style.display = "none";
+      document.querySelector('#currentuser').innerHTML = "";
   }
 });
 
@@ -167,10 +168,7 @@ signupForm.addEventListener( 'submit', (e) => {
     //get user info
     const email = signupForm[ 'signup-email'].value;
     const password = signupForm['signup-password'].value;
-    // if(password.size<=4){
-    //     signupForm['passwordalert'].innerHTML="Password must be strictly greater than 5 characters";
-    // }
-    //signup the user
+    
     auth.createUserWithEmailAndPassword(email, password).then( cred => {
         console.log(cred.user);
         const modal = document.querySelector('#modal-signup');
@@ -189,12 +187,14 @@ logout.addEventListener('click', (e) => {
 //login
 const loginForm = document.querySelector('#login-form');
 loginForm.addEventListener('submit' , (e) => {
+    console.log("hello");
     e.preventDefault();
 
     //get user info
     const email = loginForm['login-email'].value;
     const password = loginForm['login-password'].value;
-
+    /*console.log(email,password);*/
+    console.log("hello");
     auth.signInWithEmailAndPassword( email, password).then(cred => {
     const modal = document.querySelector('#modal-login');
     M.Modal.getInstance(modal).close();
