@@ -161,16 +161,19 @@ input:focus{
 	display:none;
 }
 .login-btn{
-	margin: 40px auto 20px;
+	margin: 10px auto 20px;
 	width: 80%;
 	display:block;
 	outline: none;
-	padding: 10px 0;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 10px;
+	padding-bottom: 40px;
 	border: 1px solid #fff;
 	cursor: pointer;
 	background: transparent;
 	color: #fff;
-	font-size: 16px;
+	font-size: 18px;
 }
 #colony{
 	color:white;
@@ -188,4 +191,33 @@ option{
 	width: 30%;
 	margin: auto;
 }
+.select-field{
+	height: 39px;
+	display: block;
+	position: relative;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	box-sizing: border-box;
+	z-index: 0;
+	background-color: red;
+}
+select{
+	z-index: 1;
+	background-color: red;
+}
+option{
+	color:black;
+	background-color: red;
+    position: relative;
+	display: block;
+	box-sizing: border-box;
+}
+#login-form{
+	margin-top: -50px;
+}
+#colonyname,#currentuser,#quarterno{
+	color: whitesmoke;
+}
 
+
+  
