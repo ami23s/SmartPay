@@ -21,7 +21,6 @@ auth.onAuthStateChanged(user =>{
         if(doc.data().email==user.email && doc.data().account_type=="operator"){
             console.log("its operator");
             document.querySelector('#currentuser').innerHTML = doc.data().Name;
-			
           document.querySelector('#empnoandamt').style.display = "block";
           document.querySelector('#getempno').style.display = "block";
           document.querySelector('#getamt').style.display = "block";
@@ -31,9 +30,11 @@ auth.onAuthStateChanged(user =>{
             document.querySelector('#user_display').style.display = "block";
             // document.querySelector('#welcome_user').style.display = "block";
             document.querySelector('#petrolpump_amt').style.display = "block";
+            document.querySelector('#colonyname').style.display = "block";
+            document.querySelector('#quarterno').style.display = "block";
             document.querySelector('#currentuser').innerHTML = doc.data().Name;
-			document.querySelector('#quarterno').innerHTML=doc.data().QuarterNo;
-			document.querySelector('#colonyname').innerHTML=doc.data().ColonyName;
+            document.querySelector('#quarterno').innerHTML="Quarter number: " + doc.data().Quarter_no;
+			document.querySelector('#colonyname').innerHTML=doc.data().Colony + " colony";
             var query = db.collection("users").where("email", "==", user.email);
             query.get()
             .then(function(querySnapshot) {
@@ -67,6 +68,8 @@ auth.onAuthStateChanged(user =>{
       document.querySelector('#user_display').style.display = "none";
     //   document.querySelector('#welcome_user').style.display = "none";
       document.querySelector('#petrolpump_amt').style.display = "none";
+      document.querySelector('#quarterno').style.display = "none";
+      document.querySelector('#colonyname').style.display = "none";
       document.querySelector('#currentuser').innerHTML = "";
   }
 });
@@ -98,6 +101,23 @@ function update(){
             });
         }); 
     });
+    db.collection("users").where("employeeno","==",val).get().then(function(querySnapshot){
+        querySnapshot.forEach(function(doc){
+            console.log(doc.data().email);
+            Email.send({
+                Host: "smtp.gmail.com",
+                Username : "f20180066@hyderabad.bits-pilani.ac.in",
+                Password : "hsetimA@23",
+                To : doc.data().email,
+                From : "f20180066@hyderabad.bits-pilani.ac.in",
+                Subject : b + " charged you",
+                Body : b + " charged you with INR " + amt,
+                }).then(
+                    message => alert("Verification mail sent successfully")
+                );
+                form.reset();
+        })
+    })
            //a = [a , b].join("");
           //console.log(a);
        })
@@ -160,7 +180,24 @@ function update(){
 //     });
 window.alert('Updated successfully');
 //window.location.reload();
-//form.reset();
+}
+
+
+//password reset
+function passwordreset(){
+    var email = document.querySelector('#login-email').value;
+    console.log(email);
+    if(email!=""){
+        auth.sendPasswordResetEmail(email).then(function(){
+            window.alert("Email has been sent to you Please check and verify!!!")
+        })
+        .catch(function(error){
+            window.alert(error.message);
+        })
+    }
+    else{
+        window.alert("Enter valid email ID");
+    }
 }
 
 //signup form, get id of form tag for signup form
@@ -171,13 +208,34 @@ signupForm.addEventListener( 'submit', (e) => {
     //get user info
     const email = signupForm[ 'signup-email'].value;
     const password = signupForm['signup-password'].value;
-    
+    if(password.length>=6){
     auth.createUserWithEmailAndPassword(email, password).then( cred => {
         console.log(cred.user);
         const modal = document.querySelector('#modal-signup');
         M.Modal.getInstance(modal).close();
         signupForm.reset();
     });
+    var nm = signupForm['username'].value;
+    var emp = signupForm['employee-number'].value;
+    var col = signupForm['colony'].value;
+    var quarter = signupForm['quarter-no'].value;
+    db.collection("users").add({
+        Name: nm,
+        employeeno: emp,
+        Colony: col,
+        Quarter_no: quarter,
+        email: email,
+        account_type: "user"
+    })
+    db.collection("petrolpump operator").add({
+        employeeno: emp,
+        Total_charge: 0
+    })
+}
+else{
+    window.alert("Password length must be greater than 6 characters");
+    signupForm.reset();
+}
 });
 
 // logout
